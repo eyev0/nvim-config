@@ -1,13 +1,11 @@
 return {
   -- docs in neovim
-  { "paretje/nvim-man", enabled = false },
+  -- { "paretje/nvim-man", enabled = false },
   -- dependency packages
   "nvim-lua/popup.nvim",
   "nvim-lua/plenary.nvim",
   "nvim-tree/nvim-web-devicons",
   "rktjmp/lush.nvim",
-  -- "MunifTanjim/nui.nvim",
-  -- "rcarriga/nvim-notify",
   -- neovim/lua development
   { "folke/neodev.nvim" },
   { "folke/neoconf.nvim" },
@@ -131,20 +129,6 @@ return {
     cond = not IS_FIRENVIM,
     event = "ColorScheme",
   },
-  -- {
-  --   "petertriho/nvim-scrollbar",
-  --   config = function()
-  --     require("rc.configs.scrollbar")
-  --   end,
-  --   enabled = false,
-  -- },
-  -- {
-  --   "stevearc/stickybuf.nvim",
-  --   config = function()
-  --     require("rc.configs.stickybuf")
-  --   end,
-  --   enabled = false,
-  -- },
   "szw/vim-maximizer",
   {
     "lukas-reineke/indent-blankline.nvim",
