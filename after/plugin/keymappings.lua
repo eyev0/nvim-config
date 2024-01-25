@@ -1079,7 +1079,7 @@ end, { noremap = true, silent = true })
 local esc_quit_fts = { "help", "NvimTree", "notify", "aerial", "vista_kind", "httpResult", "man", "Trouble" }
 local esc_tabclose_fts = { "fugitive", "DiffviewFiles", "DiffviewFileHistory" }
 local q_quit_fts = { "help", "notify", "man", "ImportManager", "qf" }
-autocmd("BufEnter", {
+autocmd("BufWinEnter", {
   group = augroup("CustomFiletypeSettings", {}),
   callback = function(opts)
     -- esc
@@ -1087,9 +1087,16 @@ autocmd("BufEnter", {
     local current_tab = api.nvim_get_current_tabpage()
     if vim.tbl_contains(esc_quit_fts, ft) then
       -- close only current buffer with Esc
-      map("n", "<Esc>", ":quit<CR>", { noremap = true, silent = true, nowait = true, buffer = opts.buf })
+      if ft == "qf" then
+        map("n", "<Esc>", function()
+          cmd.wincmd("p")
+          cmd.cclose()
+        end, { noremap = true, silent = true, nowait = true, buffer = opts.buf })
+      else
+        map("n", "<Esc>", ":quit<CR>", { noremap = true, silent = true, nowait = true, buffer = opts.buf })
+      end
     elseif vim.tbl_contains(esc_tabclose_fts, ft) or esc_tabclose_tabs[current_tab] then
-      -- close current tab and focus "parent" tab
+      -- close current tab and focus previously active tab
       map("n", "<Esc>", function()
         local tabnr_to_close = fn.tabpagenr()
         esc_tabclose_tabs[current_tab] = nil
@@ -1109,7 +1116,7 @@ autocmd("BufEnter", {
     -- other shortcuts
     if vim.tbl_contains(q_quit_fts, ft) then
       if ft == "qf" then
-        map("n", "<Esc>", function()
+        map("n", "q", function()
           cmd.wincmd("p")
           cmd.cclose()
         end, { noremap = true, silent = true, nowait = true, buffer = opts.buf })
