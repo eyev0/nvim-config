@@ -1,0 +1,26 @@
+-- table.insert(DEBUG_CONFIGS, {
+-- 	java = {
+-- 		-- {
+-- 		-- 	type = "java",
+-- 		-- 	request = "attach",
+-- 		-- 	name = "Debug (Attach) - Remote",
+-- 		-- 	hostName = "127.0.0.1",
+-- 		-- 	port = 5005,
+-- 		-- },
+-- 		{
+-- 			type = "java",
+-- 			request = "launch",
+-- 			name = "Launch app",
+-- 			javaExec = "java",
+-- 			mainClass = "your.package.name.MainClassName",
+-- 			-- You need to extend the classPath to list your dependencies.
+-- 			-- `nvim-jdtls` would automatically add the `classPaths` property if it is missing
+-- 			-- classPaths = {},
+-- 			-- If using multi-module projects, remove otherwise.
+-- 			-- projectName = "yourProjectName",
+-- 			-- If using the JDK9+ module system, this needs to be extended
+-- 			-- `nvim-jdtls` would automatically populate this property
+-- 			-- modulePaths = {},
+-- 		},
+-- 	},
+-- })
