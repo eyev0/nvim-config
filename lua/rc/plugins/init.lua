@@ -56,8 +56,8 @@ return {
     config = function()
       require("rc.configs.autopairs")
     end,
-    -- commit = "7b3eb9b5813a22188c4dbb248475fcbaf9f4d195",
-    branch = "local",
+    commit = "7b3eb9b5813a22188c4dbb248475fcbaf9f4d195",
+    -- branch = "local",
     -- branch = "master",
     event = "VeryLazy",
   },
@@ -156,7 +156,7 @@ return {
     config = function()
       require("rc.configs.nvim_tree")
     end,
-    tag = "nightly",
+    tag = "v1",
     event = "VimEnter",
   },
   {
@@ -191,7 +191,7 @@ return {
     config = function()
       require("rc.configs.treesitter.context")
     end,
-    dev = true,
+    -- dev = true,
     -- branch = "local",
     event = "VeryLazy",
   },
@@ -259,10 +259,10 @@ return {
     event = "VeryLazy",
   },
   {
-    -- "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
-    name = "lsp_lines.nvim",
-    dir = O.devpath .. "/lsp_lines.nvim",
-    dev = true,
+    "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
+    -- name = "lsp_lines.nvim",
+    -- dir = O.devpath .. "/lsp_lines.nvim",
+    -- dev = true,
     config = true,
   },
   -- completion/snippets
@@ -572,7 +572,7 @@ return {
         },
       }
       vim.o.signcolumn = "auto"
-      vim.o.guifont = "Source Code Pro Medium:h10"
+      vim.o.guifont = "Source Code Pro Medium:h20"
       autocmd({ "BufEnter" }, {
         pattern = "github.com_*.txt",
         command = "set filetype=markdown",
@@ -604,8 +604,8 @@ return {
   -- plugins in dev
   {
     "edementyev/workspace_config.nvim",
-    config = true,
-    dev = true,
+    -- config = true,
+    -- dev = true,
     cond = not IS_FIRENVIM,
     -- enabled = false,
   },

@@ -5,11 +5,10 @@ local patch_version = 11
 local version = ("3.%d.%d"):format(minor_version, patch_version)
 local lua_ls_path = ("%s/.local/lsp/lua-prebuilt/%s/bin/lua-language-server"):format(vim.env.HOME, version)
 
-
 -- vim.api.nvim_del_mark(la)
 
 local config = {
-  cmd = { lua_ls_path },
+  -- cmd = { lua_ls_path },
   settings = {
     Lua = {
       runtime = {

@@ -172,7 +172,7 @@ M.ShowCmd = {
   condition = function()
     return vim.o.cmdheight == 0
   end,
-  provider = ":%3.5(%S%)",
+  provider = ":%3.5(%S%) ",
 }
 
 M.ModeBlock = {
