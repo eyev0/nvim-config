@@ -389,23 +389,18 @@ end, { noremap = true, silent = true, desc = "Go to previous diagnostic" })
 map("n", "<F3>", function()
   vim.diagnostic.goto_next({ severity = { min = Lsp.diagnostic_min_severity } })
 end, { noremap = true, silent = true, desc = "Go to next diagnostic" })
--- map(
---   "n",
---   "<F4>",
---   Lsp.diagnostic_shift_min_severity,
---   { noremap = true, silent = true, desc = "Diagnostics: shift severity" }
--- )
 map(
   "n",
-  "<F28>",
-  Lsp.diagnostic_up_min_severity,
-  { noremap = true, silent = true, desc = "Diagnostics: up severity" }
+  "<F39>",
+  Lsp.diagnostic_shift_min_severity,
+  { noremap = true, silent = true, desc = "Diagnostics: shift severity" }
 )
+map("n", "<F4>", "]c", { noremap = true, silent = true, desc = "git: Next hunk" })
 map(
   "n",
-  "<F40>",
-  Lsp.diagnostic_down_min_severity,
-  { noremap = true, silent = true, desc = "Diagnostics: down severity" }
+  "<F28>", --<C-F4>
+  "[c",
+  { noremap = true, silent = true, desc = "git: Prev hunk" }
 )
 -- formatting without calling on_attach (for null-ls)
 map("n", "<leader>laf", function()
