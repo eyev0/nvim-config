@@ -1109,7 +1109,7 @@ autocmd("BufWinEnter", {
         -- close tab
         local ok, res = pcall(cmd, "tabc! " .. tabnr_to_close)
         if not ok then
-          vim.notify(("Can not this tab page: %s"):format(res), vim.log.levels.WARN)
+          vim.notify(("Can not close this tab page: %s"):format(res), vim.log.levels.WARN)
         end
       end, { noremap = true, silent = true, buffer = opts.buf })
     end

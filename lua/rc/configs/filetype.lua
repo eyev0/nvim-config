@@ -26,6 +26,7 @@ require("filetype").setup({
       [".*vscode/launch.json"] = "jsonc",
       [".*waybar/config"] = "jsonc",
       [".*sway/config"] = "swayconfig",
+      [".*\\.keymap"] = "c",
     },
     function_extensions = {
       lua = function()
