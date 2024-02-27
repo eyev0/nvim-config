@@ -18,6 +18,13 @@ O = {
   devpath = vim.env.HOME .. "/dev/nvim/plugins",
   inlay_hints = false,
   -- copilot = true,
+  ft = {
+    go = {
+      shiftwidth = 4,
+      tabstop = 4,
+      softtabstop = 4,
+    }
+  }
 }
 
 ENV = {
