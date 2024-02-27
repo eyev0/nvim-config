@@ -41,7 +41,7 @@ local options = {
     log_options = {
       git = {
         single_file = {
-          max_count = 256, -- Limit the number of commits
+          max_count = 100, -- Limit the number of commits
           follow = false, -- Follow renames (only for single file)
           all = false, -- Include all refs under 'refs/' including HEAD
           merges = false, -- List only merge commits
@@ -49,7 +49,7 @@ local options = {
           reverse = false, -- List commits in reverse order
         },
         multi_file = {
-          max_count = 256, -- Limit the number of commits
+          max_count = 100, -- Limit the number of commits
           follow = false, -- Follow renames (only for single file)
           all = false, -- Include all refs under 'refs/' including HEAD
           merges = false, -- List only merge commits
@@ -135,7 +135,7 @@ local options = {
 vim.cmd([[
 augroup DiffViewPanel
   autocmd!
-  autocmd BufEnter DiffViewFilePanel,DiffviewFileHistory lua require'diffview'.trigger_event('refresh_files')
+  autocmd BufEnter DiffViewFilePanel,DiffviewFileHistory lua require'diffview'.emit("refresh_files")
 augroup end
 ]])
 

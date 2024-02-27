@@ -184,3 +184,14 @@ require("nvim-tree").setup({
     },
   },
 })
+
+-- mac
+vim.api.nvim_create_autocmd("BufEnter", {
+  group = vim.api.nvim_create_augroup("NvimTreeIlluminateToggleOff", {}),
+  callback = function(opts)
+    if vim.bo[opts.buf].filetype == "NvimTree" then
+      vim.cmd("IlluminatePauseBuf")
+      vim.cmd("IlluminateResumeBuf")
+    end
+  end,
+})
