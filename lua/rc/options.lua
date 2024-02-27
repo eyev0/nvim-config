@@ -11,6 +11,7 @@ vim.opt.whichwrap:append("<,>,[,],h,l") -- move to next line with theses keys
 -- vim.cmd('syntax on') -- syntax highlighting
 vim.o.pumheight = 10 -- Makes popup menu smaller
 
+vim.o.exrc = true
 vim.o.confirm = true
 vim.o.swapfile = false
 vim.o.autowrite = true
