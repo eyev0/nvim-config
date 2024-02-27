@@ -85,5 +85,5 @@ require("lazy").setup(plugins, opts)
 -- vim.cmd([[command! SessionLoad lua require("persisted").load()]])
 -- vim.cmd([[command! SessionLoad lua require("persistence").load()]])
 
-U.clear_reg_marks()
+-- U.clear_reg_marks()
 -- keymaps are set in ./after/plugin/keymappings.lua
