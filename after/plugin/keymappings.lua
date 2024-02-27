@@ -1080,7 +1080,7 @@ autocmd("BufWinEnter", {
   callback = function(opts)
     -- esc
     local ft = vim.bo[opts.buf].filetype
-    local current_tab = api.nvim_get_current_tabpage()
+    local tab_to_close = api.nvim_get_current_tabpage()
     if vim.tbl_contains(esc_quit_fts, ft) then
       -- close only current buffer with Esc
       if ft == "qf" then
@@ -1091,19 +1091,32 @@ autocmd("BufWinEnter", {
       else
         map("n", "<Esc>", ":quit<CR>", { noremap = true, silent = true, nowait = true, buffer = opts.buf })
       end
-    elseif vim.tbl_contains(esc_tabclose_fts, ft) or esc_tabclose_tabs[current_tab] then
+    elseif vim.tbl_contains(esc_tabclose_fts, ft) or esc_tabclose_tabs[tab_to_close] ~= nil then
       -- close current tab and focus previously active tab
       map("n", "<Esc>", function()
-        local tabnr_to_close = fn.tabpagenr()
-        esc_tabclose_tabs[current_tab] = nil
+        -- pprint(esc_tabclose_tabs)
+        -- print("esc close tab " .. tab_to_close)
+        -- local tabnr_to_close = fn.tabpagenr()
+        -- print("fn.tabpagenr " .. tabnr_to_close)
+        -- print("current_tab " .. tab_to_close)
+        local current_tab_handle = api.nvim_get_current_tabpage()
+        if esc_tabclose_tabs[current_tab_handle] == nil then
+          -- current tab is not the tab that was bound with current buffer
+          -- -> we do not want to close this tab
+          return
+        else
+          esc_tabclose_tabs[current_tab_handle] = nil
+        end
+        -- save current tab number
+        local current_tab_n = fn.tabpagenr()
         -- go to parent tabpage
-        if prev_active_tabs[current_tab] ~= nil then
-          cmd(("normal! %sgt"):format(prev_active_tabs[current_tab]))
+        if prev_active_tabs[current_tab_handle] ~= nil then
+          cmd(("normal! %sgt"):format(prev_active_tabs[current_tab_handle]))
         else
           cmd("tabprevious")
         end
-        -- close tab
-        local ok, res = pcall(cmd, "tabc! " .. tabnr_to_close)
+        -- close current tab
+        local ok, res = pcall(cmd, "tabc! " .. current_tab_n)
         if not ok then
           vim.notify(("Can not close this tab page: %s"):format(res), vim.log.levels.WARN)
         end
