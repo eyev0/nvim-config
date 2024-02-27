@@ -4,6 +4,7 @@ require("rc.configs.dap.java")
 require("rc.configs.dap.nlua")
 -- require("rc.configs.dap.go")
 require("rc.configs.dap.python")
+require("rc.configs.dap.rust")
 
 local dap = require("dap")
 

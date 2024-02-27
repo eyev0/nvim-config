@@ -222,8 +222,16 @@ return {
     config = function()
       require("rc.configs.rust-tools")
     end,
-    enabled = true,
+    enabled = false,
     -- event = "VeryLazy",
+  },
+  {
+    "mrcjkb/rustaceanvim",
+    version = "^4", -- Recommended
+    ft = { "rust" },
+    config = function()
+      require("rc.configs.rustaceanvim")
+    end,
   },
   {
     "kosayoda/nvim-lightbulb",

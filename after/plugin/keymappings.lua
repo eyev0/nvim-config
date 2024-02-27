@@ -675,7 +675,8 @@ map("n", "<F8>", function()
   elseif vim.bo.filetype == "rust" then
     if dap.session() == nil then
       pcall(dapui.close)
-      cmd("RustDebuggables")
+      -- cmd("RustDebuggables")
+      cmd("RustLsp debuggables")
     else
       dap.continue()
     end
