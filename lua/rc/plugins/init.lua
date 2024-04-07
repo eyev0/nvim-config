@@ -511,7 +511,8 @@ return {
     "Wansmer/langmapper.nvim",
     priority = 1, -- High priority is needed if you will use `autoremap()`
     config = function()
-      require("langmapper").setup({
+      local langmapper = require("langmapper")
+      langmapper.setup({
         ---@type boolean Add mapping for every CTRL+ binding or not.
         map_all_ctrl = true,
         ---@type string[] Modes to `map_all_ctrl`
@@ -522,12 +523,20 @@ return {
         hack_keymap = true,
         ---@type string[] Usually you don't want insert mode commands to be translated when hacking.
         ---This does not affect normal wrapper functions, such as `langmapper.map`
-        -- disable_hack_modes = { "i" },
+        disable_hack_modes = { "i" },
         ---@type table Modes whose mappings will be checked during automapping.
         automapping_modes = { "n", "v", "x", "s", "i" },
       })
+      langmapper.hack_get_keymap()
     end,
     enabled = false,
+  },
+  {
+    "keaising/im-select.nvim",
+    config = function()
+      require("im_select").setup({})
+    end,
+    -- enabled = false,
   },
   -- colorschemes
   {

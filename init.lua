@@ -2,13 +2,13 @@
 
 --- options
 ---@class Options
----@field colorscheme ColorschemeOption
 O = {
   scrolloff = 9,
   sidescrolloff = 15,
   signcolumn = "auto:1-2",
   -- keep this many lines in terminal buffer
   scrollback = 20000,
+  ---@type ColorschemeOption
   colorscheme = "gruvbox-material",
   background = "dark",
   lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim",
@@ -25,10 +25,9 @@ O = {
       shiftwidth = 4,
       tabstop = 4,
       softtabstop = 4,
-    }
+    },
   },
-  python_module = "app"
-
+  python_module = "app",
 }
 
 require("rc")

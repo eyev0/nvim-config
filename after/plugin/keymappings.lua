@@ -1316,7 +1316,7 @@ autocmd("BufWinEnter", {
 })
 
 if pcall(require, "langmapper") then
-  require("langmapper").automapping({ global = true, buffer = false })
+  require("langmapper").automapping({ global = true, buffer = true })
 end
 
 -- vim.api.nvim_set_keymap(

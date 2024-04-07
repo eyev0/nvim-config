@@ -146,16 +146,6 @@ local mappings = {
   ["<S-Tab>"] = prev_item(false),
 }
 
-if pcall(require, "langmapper") then
-  local keymap = require("cmp.utils.keymap")
-  local origin_set_map = keymap.set_map
-  local utils = require("langmapper.utils")
-  keymap.set_map = function(bufnr, mode, lhs, rhs, opts)
-    origin_set_map(bufnr, mode, lhs, rhs, opts)
-    origin_set_map(bufnr, mode, utils.translate_keycode(lhs, "default", "ru"), rhs, opts)
-  end
-end
-
 local function merge(a, b)
   return vim.tbl_deep_extend("force", {}, a, b)
 end
