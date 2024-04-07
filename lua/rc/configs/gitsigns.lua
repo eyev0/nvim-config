@@ -11,7 +11,7 @@ local function set_gitsigns_buf_shortcuts(buf_map, gs)
   end, { noremap = true, silent = true, expr = true, desc = "git: Next hunk" })
   buf_map(
     "n",
-    "<F28>", --<C-F4>
+    F_map("<F28>"), --<C-F4>
     function()
       if vim.wo.diff then
         return "[c"

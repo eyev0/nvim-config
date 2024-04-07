@@ -1,34 +1,34 @@
-local pluginspath = vim.fn.stdpath("data") .. "/lazy"
+---@alias ColorschemeOption "gruvbox-material" | "catppuccin"
 
 --- options
 ---@class Options
----@field scrolloff number
----@field sidescrolloff number
 ---@field colorscheme ColorschemeOption
 O = {
   scrolloff = 9,
   sidescrolloff = 15,
-  signcolumn = "yes:2",
+  signcolumn = "auto:1-2",
   -- keep this many lines in terminal buffer
   scrollback = 20000,
   colorscheme = "gruvbox-material",
-  background = "light",
+  background = "dark",
   lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim",
-  pluginspath = pluginspath,
-  devpath = vim.env.HOME .. "/dev/nvim/plugins",
+  pluginspath = vim.fn.stdpath("data") .. "/lazy",
+  devpath = vim.env.HOME .. "/dev/personal/neovim-plugins",
   inlay_hints = false,
+  git_rev = "master",
+  git_worktree_open_file_on_switch = "",
+  git_worktree_post_hook_cmd = "",
   -- copilot = true,
   ft = {
     go = {
+      expandtab = false,
       shiftwidth = 4,
       tabstop = 4,
       softtabstop = 4,
     }
-  }
-}
+  },
+  python_module = "app"
 
-ENV = {
-  PYTHON_MODULE = "app",
 }
 
 require("rc")

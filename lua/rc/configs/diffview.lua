@@ -22,8 +22,7 @@ local options = {
   },
   file_panel = {
     win_config = {
-      position = "left",
-      width = 35,
+      position = "top",
       height = 10,
     },
     listing_style = "tree", -- One of 'list' or 'tree'
@@ -132,11 +131,11 @@ local options = {
   },
 }
 
-vim.cmd([[
-augroup DiffViewPanel
-  autocmd!
-  autocmd BufEnter DiffViewFilePanel,DiffviewFileHistory lua require'diffview'.emit("refresh_files")
-augroup end
-]])
+-- vim.cmd([[
+-- augroup DiffViewPanel
+--   autocmd!
+--   autocmd BufEnter DiffViewFilePanel,DiffviewFileHistory lua require'diffview'.emit("refresh_files")
+-- augroup end
+-- ]])
 
 require("diffview").setup(options)

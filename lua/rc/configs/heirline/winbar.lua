@@ -34,8 +34,6 @@ local WinBars = {
       end,
       utils.surround({ "", "" }, "bright_bg", c.WinBufNrs),
     },
-    c.Space,
-    -- c.Navic,
   },
 }
 

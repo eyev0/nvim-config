@@ -81,7 +81,7 @@ local function add_debug_configs(new_configs)
 			table.insert(merged_configs[lang], vim.tbl_deep_extend("force", {}, DEBUG_CONFIGS_BASE[lang] or {}, config))
 		end
 		-- insert all merged configs into dap.configurations.language
-		U.tbl_insert_all(dap.configurations[lang], merged_configs[lang])
+		U.list_merge(dap.configurations[lang], merged_configs[lang])
 	end
 end
 

@@ -44,6 +44,7 @@
 local default_width = 30
 local width = default_width
 local tree_bufnr = nil
+local max_reopen_width = 40
 
 local aug_id = vim.api.nvim_create_augroup("NvimTreeCaptureResizeWidth", {})
 vim.api.nvim_create_autocmd("WinResized", {
@@ -161,7 +162,7 @@ require("nvim-tree").setup({
   view = {
     -- adaptive_size = true,
     width = function()
-      return width
+      return math.min(width, max_reopen_width)
     end,
     preserve_window_proportions = true,
     number = false,
@@ -191,7 +192,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
   callback = function(opts)
     if vim.bo[opts.buf].filetype == "NvimTree" then
       vim.cmd("IlluminatePauseBuf")
-      vim.cmd("IlluminateResumeBuf")
+      -- vim.cmd("IlluminateResumeBuf")
     end
   end,
 })

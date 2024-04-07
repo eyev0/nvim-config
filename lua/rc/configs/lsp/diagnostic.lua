@@ -68,7 +68,7 @@ local function print_severity()
   end, { { filter = { event = "msg_show" }, view = "mini" } })
 end
 local default_severity = vim.diagnostic.severity.WARN
-Lsp.diagnostic_min_severity = default_severity
+Lsp.diagnostic_min_severity = Lsp.diagnostic_min_severity or default_severity
 Lsp.diagnostic_up_min_severity = function()
   Lsp.diagnostic_min_severity = math.max(Lsp.diagnostic_min_severity - 1, vim.diagnostic.severity.ERROR)
   print_severity()

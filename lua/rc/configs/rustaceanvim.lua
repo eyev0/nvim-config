@@ -27,11 +27,11 @@ adapter.port = port
 --   type = "server"
 -- }
 
-pprint(adapter)
+-- pprint(adapter)
 
 vim.g.rustaceanvim = {
   dap = {
-    -- adapter = adapter,
+    adapter = adapter,
   },
   server = {
     standalone = false,

@@ -1,19 +1,14 @@
-DEBUG_CONFIG = vim.env.NVIM_DEBUG_MY_CONFIG == 1 and true or false
 IS_FIRENVIM = vim.g.started_by_firenvim ~= nil or vim.env.NVIM_FIRENVIM == 1
 
 -- disable highlighting matching parens
 vim.g.loaded_matchparen = 1
-vim.g.do_filetype_lua = true
-vim.g.did_load_filetypes = 0
 
+-- map leader to space
 pcall(vim.keymap.del, "", "<Space>")
 vim.keymap.set("", "<Space>", "<NOP>", { noremap = true, silent = true })
 vim.g.mapleader = " "
 
----@alias ColorschemeOption "gruvbox-material" | "catppuccin"
-
-vim.o.background = O.background
-
+-- set some global functions
 _G.autocmd = vim.api.nvim_create_autocmd
 _G.augroup = vim.api.nvim_create_augroup
 _G.feedkeys = function(keys, mode)
@@ -25,6 +20,7 @@ end
 
 -- utils
 U = require("rc.utils")
+_G.tprint = U.tprint
 
 -- DEBUG_CONFIGS should have following structure:
 -- { typescript = {{ config1 }, { config2 }, ... }, lua = { { ... }, { ... } }}
@@ -32,6 +28,8 @@ DEBUG_CONFIGS = {}
 
 -- set options
 require("rc.options")
+-- init os-specific f-keys remaps
+require("rc.os_keys_remap")
 
 -- plugins
 -- init lazy
@@ -73,17 +71,8 @@ local opts = {
 }
 
 local plugins
-if DEBUG_CONFIG then
-  print("DEBUG_CONFIG")
-  plugins = require("rc.plugins.debug")
-else
-  plugins = require("rc.plugins")
-end
+plugins = require("rc.plugins")
 require("lazy").setup(plugins, opts)
-
--- command to load session
--- vim.cmd([[command! SessionLoad lua require("persisted").load()]])
--- vim.cmd([[command! SessionLoad lua require("persistence").load()]])
 
 -- U.clear_reg_marks()
 -- keymaps are set in ./after/plugin/keymappings.lua

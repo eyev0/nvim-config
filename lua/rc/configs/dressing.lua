@@ -22,7 +22,7 @@ require("dressing").setup({
     -- 'editor' and 'win' will default to being centered
     relative = "editor",
     -- These can be integers or a float between 0 and 1 (e.g. 0.4 for 40%)
-    prefer_width = 60,
+    prefer_width = 0.5,
     width = nil,
     -- min_width and max_width can be a list of mixed types.
     -- min_width = {20, 0.2} means "the greater of 20 columns or 20% of total"
@@ -47,11 +47,10 @@ require("dressing").setup({
     get_config = function(opts)
       local config = {}
       local extra_width = 20
-      local w = math.max(string.len(opts.prompt or ""), string.len(opts.default or "")) + extra_width
-      if
-        opts.prompt ~= nil
-        and (opts.prompt:find("New Name:") ~= nil or opts.prompt:find("Rename to") ~= nil)
-      then
+      opts.prompt = opts.prompt or ""
+      opts.default = opts.default or ""
+      local w = math.max(opts.prompt:len(), opts.default:len()) + extra_width
+      if opts.prompt:find("New Name") ~= nil or opts.prompt:find("Rename to") ~= nil then
         config.start_in_insert = false
         w = math.max(w, 40)
       end
@@ -63,7 +62,7 @@ require("dressing").setup({
     -- Set to false to disable the vim.ui.select implementation
     enabled = true,
     -- Priority list of preferred vim.select implementations
-    backend = { "telescope", "nui", "builtin", "fzf_lua", "fzf" },
+    backend = { "nui", "telescope", "builtin", "fzf_lua", "fzf" },
     -- Trim trailing `:` from prompt
     telescope = require("telescope.themes").get_cursor({
       wrap_results = true,

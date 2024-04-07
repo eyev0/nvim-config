@@ -71,6 +71,7 @@ pcall(telescope.load_extension, "yank_history")
 pcall(telescope.load_extension, "aerial")
 pcall(telescope.load_extension, "persisted")
 pcall(telescope.load_extension, "tmuxinator")
+pcall(telescope.load_extension, "git_worktree")
 -- telescope.load_extension("git_worktree")
 
 vim.cmd([[autocmd User TelescopePreviewerLoaded setlocal wrap]])
@@ -194,35 +195,37 @@ return {
           preview_width = 0.47,
         },
       }
-      pickers.new(opts, {
-        prompt_title = "Open dir",
-        finder = finders.new_table({
-          results = dirs_lookup,
-        }),
-        sorter = conf.generic_sorter(opts),
-        attach_mappings = function(_, map)
-          -- open in new tab
-          map("i", "<C-t>", function(prompt_bufnr)
-            _actions.open_dir(prompt_bufnr, "tab", false)
-          end)
-          -- open in tmux window
-          map("i", "<C-m>", function(prompt_bufnr)
-            _actions.open_dir(prompt_bufnr, "tmux", false)
-          end)
-          -- open in new tab
-          map("i", "<C-S-t>", function(prompt_bufnr)
-            _actions.open_dir(prompt_bufnr, "tab", true)
-          end)
-          -- open in tmux window
-          map("i", "<C-S-m>", function(prompt_bufnr)
-            _actions.open_dir(prompt_bufnr, "tmux", true)
-          end)
-          map("i", "<CR>", function(prompt_bufnr)
-            _actions.open_dir(prompt_bufnr)
-          end)
-          return true
-        end,
-      }):find()
+      pickers
+        .new(opts, {
+          prompt_title = "Open dir",
+          finder = finders.new_table({
+            results = dirs_lookup,
+          }),
+          sorter = conf.generic_sorter(opts),
+          attach_mappings = function(_, map)
+            -- open in new tab
+            map("i", "<C-t>", function(prompt_bufnr)
+              _actions.open_dir(prompt_bufnr, "tab", false)
+            end)
+            -- open in tmux window
+            map("i", "<C-m>", function(prompt_bufnr)
+              _actions.open_dir(prompt_bufnr, "tmux", false)
+            end)
+            -- open in new tab
+            map("i", "<C-S-t>", function(prompt_bufnr)
+              _actions.open_dir(prompt_bufnr, "tab", true)
+            end)
+            -- open in tmux window
+            map("i", "<C-S-m>", function(prompt_bufnr)
+              _actions.open_dir(prompt_bufnr, "tmux", true)
+            end)
+            map("i", "<CR>", function(prompt_bufnr)
+              _actions.open_dir(prompt_bufnr)
+            end)
+            return true
+          end,
+        })
+        :find()
     end,
   },
 }

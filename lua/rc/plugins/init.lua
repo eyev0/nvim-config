@@ -6,6 +6,7 @@ return {
   "nvim-lua/plenary.nvim",
   "nvim-tree/nvim-web-devicons",
   "rktjmp/lush.nvim",
+  "nvim-neotest/nvim-nio",
   -- neovim/lua development
   { "folke/neodev.nvim" },
   { "folke/neoconf.nvim" },
@@ -64,12 +65,6 @@ return {
   { "mbbill/undotree" },
   "lambdalisue/suda.vim",
   -- filetype-specific
-  {
-    "nathom/filetype.nvim",
-    config = function()
-      require("rc.configs.filetype")
-    end,
-  },
   { "gpanders/editorconfig.nvim" },
   -- {
   --   "epwalsh/obsidian.nvim",
@@ -209,7 +204,7 @@ return {
   },
   { "mfussenegger/nvim-jdtls" },
   {
-    "jose-elias-alvarez/null-ls.nvim",
+    "nvimtools/none-ls.nvim",
     config = function()
       require("rc.configs.lsp.ls.null-ls")
     end,
@@ -232,13 +227,6 @@ return {
     config = function()
       require("rc.configs.rustaceanvim")
     end,
-  },
-  {
-    "kosayoda/nvim-lightbulb",
-    config = function()
-      require("rc.configs.lightbulb")
-    end,
-    event = "VeryLazy",
   },
   {
     "j-hui/fidget.nvim",
@@ -293,7 +281,7 @@ return {
   },
   {
     "saecki/crates.nvim",
-    tag = "v0.3.0",
+    tag = "stable",
     event = "VeryLazy",
     config = function()
       require("crates").setup({
@@ -306,14 +294,6 @@ return {
   },
   { "onsails/lspkind.nvim" },
   { "rafamadriz/friendly-snippets" },
-  -- regex
-  {
-    "bennypowers/nvim-regexplainer",
-    config = function()
-      require("rc.configs.regexplainer")
-    end,
-    enabled = false,
-  },
   -- navigation
   {
     "ThePrimeagen/harpoon",
@@ -348,13 +328,57 @@ return {
       require("rc.configs.diffview")
     end,
   },
-  { "tpope/vim-rhubarb" },
   {
     "lewis6991/gitsigns.nvim",
     config = function()
       require("rc.configs.gitsigns")
     end,
     event = "ColorScheme",
+  },
+  {
+    "polarmutex/git-worktree.nvim",
+    config = function()
+      require("rc.configs.git-worktree")
+    end,
+    -- dev = true,
+    -- dir = O.devpath .. "/git-worktree.nvim",
+    -- branch = "local",
+  },
+  {
+    "harrisoncramer/gitlab.nvim",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "nvim-lua/plenary.nvim",
+      "sindrets/diffview.nvim",
+      "stevearc/dressing.nvim", -- Recommended but not required. Better UI for pickers.
+      "nvim-tree/nvim-web-devicons", -- Recommended but not required. Icons in discussion tree.
+    },
+    build = function()
+      require("gitlab.server").build(true)
+    end, -- Builds the Go binary
+    config = function()
+      require("gitlab").setup({
+        discussion_tree = { -- The discussion tree that holds all comments
+          switch_view = "S", -- Toggles between the notes and discussions views
+          default_view = "discussions", -- Show "discussions" or "notes" by default
+          blacklist = {}, -- List of usernames to remove from tree (bots, CI, etc)
+          jump_to_file = "o", -- Jump to comment location in file
+          jump_to_reviewer = "m", -- Jump to the location in the reviewer window
+          edit_comment = "e", -- Edit comment
+          delete_comment = "dd", -- Delete comment
+          reply = "r", -- Reply to comment
+          toggle_node = "t", -- Opens or closes the discussion
+          toggle_all_discussions = "T", -- Open or close separately both resolved and unresolved discussions
+          toggle_resolved_discussions = "R", -- Open or close all resolved discussions
+          toggle_unresolved_discussions = "U", -- Open or close all unresolved discussions
+          toggle_resolved = "p", -- Toggles the resolved status of the whole discussion
+          position = "bottom", -- "top", "right", "bottom" or "left"
+          open_in_browser = "b", -- Jump to the URL of the current note/discussion
+          size = "13%", -- Size of split
+          toggle_tree_type = "i", -- Toggle type of discussion tree - "simple", or "by_file_name"
+        },
+      })
+    end,
   },
   -- quickfix
   {
@@ -436,6 +460,7 @@ return {
   },
   {
     "rcarriga/nvim-dap-ui",
+    dependencies = { "nvim-nio" },
     config = function()
       require("rc.configs.dap.ui")
     end,
@@ -447,7 +472,12 @@ return {
       require("rc.configs.dap.virtual-text")
     end,
   },
-  { "leoluz/nvim-dap-go", config = true },
+  {
+    "leoluz/nvim-dap-go",
+    config = true,
+    dev = true,
+    dir = O.devpath .. "/nvim-dap-go",
+  },
   -- tests
   {
     "David-Kunz/jester",
@@ -515,6 +545,8 @@ return {
         vim.g.gruvbox_material_enable_italic = 1
         vim.g.gruvbox_material_visual = "reverse"
         vim.g.gruvbox_material_current_word = "grey background"
+
+        vim.cmd("autocmd ColorScheme * highlight! link WinBar Normal")
         vim.cmd("colorscheme gruvbox-material")
       end
     end,
@@ -529,7 +561,7 @@ return {
       if O.colorscheme == "catppuccin" then
         require("catppuccin").setup({
           ---@type "mocha" | "macchiato" | "frappe" | "latte"
-          flavour = "latte",
+          flavour = "frappe",
           background = {
             -- light = "latte",
             -- dark = "mocha",
@@ -542,10 +574,6 @@ return {
             indent_blankline = {
               enabled = true,
               colored_indent_levels = false,
-            },
-            navic = {
-              enabled = false,
-              custom_bg = "NONE",
             },
           },
         })
@@ -563,7 +591,7 @@ return {
   -- nvim in browser
   {
     "glacambre/firenvim",
-    cond = IS_FIRENVIM,
+    -- cond = IS_FIRENVIM,
     build = function()
       require("lazy").load({ plugins = "firenvim", wait = true })
       vim.fn["firenvim#install"](0)
@@ -579,7 +607,6 @@ return {
           },
         },
       }
-      vim.o.signcolumn = "auto"
       vim.o.guifont = "Source Code Pro Medium:h20"
       autocmd({ "BufEnter" }, {
         pattern = "github.com_*.txt",
@@ -602,7 +629,17 @@ return {
   },
   -- REST
   {
+    "vhyrro/luarocks.nvim",
+    priority = 1000,
+    opts = {
+      rocks = { "lua-curl", "nvim-nio", "mimetypes", "xml2lua" },
+    },
+    config = true,
+  },
+  {
     "rest-nvim/rest.nvim",
+    ft = "http",
+    dependencies = { "luarocks.nvim" },
     config = function()
       require("rc.configs.rest")
     end,
@@ -610,11 +647,4 @@ return {
   -- games
   { "ThePrimeagen/vim-be-good" },
   -- plugins in dev
-  {
-    "edementyev/workspace_config.nvim",
-    -- config = true,
-    -- dev = true,
-    cond = not IS_FIRENVIM,
-    -- enabled = false,
-  },
 }

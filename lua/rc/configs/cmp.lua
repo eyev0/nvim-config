@@ -176,8 +176,8 @@ local sources = {
 cmp.setup({
   enabled = function()
     return not (
-        vim.api.nvim_buf_get_option(0, "buftype") == "prompt"
-        or vim.api.nvim_buf_get_option(0, "filetype") == "no-neck-pain"
+        vim.api.nvim_get_option_value("buftype", { buf = 0 }) == "prompt"
+        or vim.api.nvim_get_option_value("filetype", { buf = 0 }) == "no-neck-pain"
       ) or require("cmp_dap").is_dap_buffer()
   end,
   preselect = cmp.PreselectMode.Item,
@@ -230,7 +230,7 @@ cmp.setup({
         -- Get the full snippet (and only keep first line)
         local word = entry:get_insert_text()
         if entry.completion_item.insertTextFormat == types.lsp.InsertTextFormat.Snippet then
-          word = vim.lsp.util.parse_snippet(word)
+          word = str.get_word(word)
         end
         word = str.oneline(word)
         if

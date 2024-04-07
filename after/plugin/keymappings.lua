@@ -39,7 +39,7 @@ map("n", "&", ":&&<CR>", { noremap = true, silent = true })
 -- 'whole buffer' operator
 map("o", "ie", "<cmd>execute 'normal! ggVG'<cr>", { noremap = true, silent = true, desc = "Whole buffer" })
 -- quit with <C-F12>
-map({ "n", "t" }, "<F36>", function()
+map({ "n", "t" }, F_map("<F36>"), function()
   pcall(cmd, "wa")
   cmd("qa")
 end, { noremap = true, silent = true }) --<C-F12>
@@ -83,16 +83,16 @@ map("t", "<C-PageDown>", function()
   cmd("tabnext")
 end, { noremap = true, silent = true })
 -- resize with C-arrows
-map({ "", "t" }, "<M-C-Up>", function()
+map({ "", "t" }, "<C-S-Up>", function()
   vim.cmd("resize -3")
 end, { noremap = true, silent = true })
-map({ "", "t" }, "<M-C-Down>", function()
+map({ "", "t" }, "<C-S-Down>", function()
   vim.cmd("resize +3")
 end, { noremap = true, silent = true })
-map({ "", "t" }, "<M-C-Left>", function()
+map({ "", "t" }, "<C-S-Left>", function()
   vim.cmd("vertical resize -4")
 end, { noremap = true, silent = true })
-map({ "", "t" }, "<M-C-Right>", function()
+map({ "", "t" }, "<C-S-Right>", function()
   vim.cmd("vertical resize +4")
 end, { noremap = true, silent = true })
 -- better indenting
@@ -221,17 +221,12 @@ map(
   ':<c-u>lua require"treesitter-unit".select(true)<CR>',
   { noremap = true, silent = true, desc = "Select treesitter node's outer scope" }
 )
+-- toggle ts context
 map(
   "n",
-  "tn",
-  require("illuminate").goto_next_reference,
-  { noremap = true, silent = true, desc = "Go to next node reference" }
-)
-map(
-  "n",
-  "tp",
-  require("illuminate").goto_prev_reference,
-  { noremap = true, silent = true, desc = "Go to prev node reference" }
+  "<leader>tt",
+  [[:TSContextToggle<CR>]],
+  { noremap = true, silent = true, desc = "Toggle treesitter-context" }
 )
 -- quickfix stuff
 -- Open quickfix list at the bottom of the screen
@@ -360,45 +355,39 @@ map("n", "<c-u>", function()
   end
 end, { silent = true, expr = true })
 -- lsp
+map("n", "<leader>laa", function()
+  vim.ui.input({ prompt = "LSP client name to attach", completion = "shellcmd" }, function(input)
+    if input ~= nil then
+      for _, v in pairs(vim.lsp.get_clients({ name = input })) do
+        if vim.lsp.buf_attach_client(0, v.id) then
+          vim.notify(("Client %s attached"):format(input))
+        end
+      end
+    end
+  end)
+end, { noremap = true, silent = true, desc = "Attach lsp client to current buffer" })
 -- toggle diagnostics
-map(
-  "n",
-  "<F2>",
-  Lsp.diagnostic_toggle_virt_lines,
-  { noremap = true, silent = true, desc = "Diagnostics: toggle virtual lines" }
-)
-map(
-  "n",
-  "<F26>",
-  Lsp.diagnostic_toggle_float,
-  { noremap = true, silent = true, desc = "Diagnostics: toggle float" }
-)
-map(
-  "n",
-  "<F38>",
-  Lsp.inlay_hints_toggle,
-  { noremap = true, silent = true, desc = "Diagnostics: toggle inlay_hints" }
-)
+map("n", "<leader>ti", Lsp.inlay_hints_toggle, { noremap = true, silent = true, desc = "Toggle inlay_hints" })
 map("n", "<leader>le", function()
   vim.diagnostic.setqflist({ severity = { min = Lsp.diagnostic_min_severity, open = false } })
   qf.open()
 end, { noremap = true, silent = true, desc = "Diagnostics to qf list" })
-map("n", "<F27>", function()
-  vim.diagnostic.goto_prev({ severity = { min = Lsp.diagnostic_min_severity } })
-end, { noremap = true, silent = true, desc = "Go to previous diagnostic" })
-map("n", "<F3>", function()
+map("n", "<F2>", function()
   vim.diagnostic.goto_next({ severity = { min = Lsp.diagnostic_min_severity } })
 end, { noremap = true, silent = true, desc = "Go to next diagnostic" })
+map("n", F_map("<F26>"), function()
+  vim.diagnostic.goto_prev({ severity = { min = Lsp.diagnostic_min_severity } })
+end, { noremap = true, silent = true, desc = "Go to previous diagnostic" })
 map(
   "n",
-  "<F39>",
-  Lsp.diagnostic_shift_min_severity,
-  { noremap = true, silent = true, desc = "Diagnostics: shift severity" }
+  F_map("<F38>"),
+  Lsp.diagnostic_toggle_virt_lines,
+  { noremap = true, silent = true, desc = "Diagnostics: toggle virtual lines" }
 )
 map("n", "<F4>", "]c", { noremap = true, silent = true, desc = "git: Next hunk" })
 map(
   "n",
-  "<F28>", --<C-F4>
+  F_map("<F28>"), --<C-F4>
   "[c",
   { noremap = true, silent = true, desc = "git: Prev hunk" }
 )
@@ -406,11 +395,24 @@ map(
 map("n", "<leader>laf", function()
   vim.lsp.buf.format({
     async = true,
-    filter = function(client)
-      return client.name == "null-ls"
-    end,
+    -- filter = function(client)
+    -- return client.name == "null-ls"
+    -- end,
   })
 end, { noremap = true, silent = true, desc = "Format file" })
+local range_formatting = function()
+  local start_row, _ = unpack(vim.api.nvim_buf_get_mark(0, "<"))
+  local end_row, _ = unpack(vim.api.nvim_buf_get_mark(0, ">"))
+  vim.lsp.buf.format({
+    range = {
+      ["start"] = { start_row, 0 },
+      ["end"] = { end_row, 0 },
+    },
+    async = true,
+  })
+end
+map("v", "<leader>laf", range_formatting, { desc = "Range Formatting" })
+-- map("v", "<leader>laf", vim.lsp.buf.format, { noremap = true, silent = true })
 -- refactoring.nvim
 local function set_refactor_shortcuts(params)
   local function buf_map(mode, lhs, rhs, opts)
@@ -453,9 +455,7 @@ api.nvim_create_autocmd("BufEnter", {
 })
 -- local aerial_config = require("rc.configs.aerial")
 map("n", "<leader>ls", function()
-  -- aerial_config.setup("sideview")
   cmd("AerialToggle!")
-  -- cmd("Navbuddy")
 end, { noremap = true, silent = true, desc = "Toggle lsp symbols list" })
 -- NvimTree
 local nvim_tree = require("nvim-tree.api").tree
@@ -474,41 +474,60 @@ local term = require("toggleterm.terminal").Terminal:new({
     cmd("startinsert!")
   end,
 })
+local term_direction = nil
 local function toggleterm(size, direction)
-  direction = vim.F.if_nil(direction, "float")
-  term:toggle(size, direction)
+  direction = vim.F.if_nil(direction, term_direction, "horizontal")
+  if not term:is_open() then
+    term:open(size or 25, direction)
+  else
+    if term:is_focused() then
+      term:close()
+      if
+        term_direction ~= direction and term_direction ~= "float" -- always close float
+      then
+        term:open(size, direction)
+      end
+    else
+      term:focus()
+    end
+  end
+  term_direction = direction
 end
-map({ "n", "t" }, "<F1>", toggleterm, { noremap = true, silent = true })
-map({ "n", "t" }, "<F25>", function()
+map({ "n", "t" }, "<F1>", function()
+  toggleterm(nil, "horizontal")
+end, { noremap = true, silent = true })
+map({ "n", "t" }, F_map("<F25>"), function()
   toggleterm(nil, "tab")
 end, { noremap = true, silent = true })
--- map({ "n", "t" }, "<C-S-End>", function()
---   toggleterm(16, "horizontal")
--- end, { noremap = true, silent = true })
 -- Telescope - opener
-local find_files_opts = {
-  layout_strategy = "horizontal",
-  no_ignore = true,
-  hidden = true,
-  layout_config = {
-    mirror = false,
-    prompt_position = "top",
-    scroll_speed = 5,
-    height = 0.4,
-    width = 0.65,
-    preview_width = 0.47,
-  },
-}
+local function with_find_files_opts(opts)
+  opts = opts or {}
+  return vim.tbl_deep_extend("force", {
+    layout_strategy = "horizontal",
+    no_ignore = true,
+    hidden = true,
+    layout_config = {
+      mirror = false,
+      prompt_position = "top",
+      scroll_speed = 5,
+      height = 0.7,
+      width = 0.9,
+      preview_width = 0.6,
+    },
+  }, opts)
+end
 local function with_default_opts(opts)
   opts = opts or {}
   return vim.tbl_deep_extend("force", {
-    layout_strategy = "center",
+    layout_strategy = "vertical",
     layout_config = {
-      mirror = true,
+      -- mirror = true,
       prompt_position = "top",
-      scroll_speed = 7,
-      height = 0.45,
-      width = 0.6,
+      -- preview_cutoff = 0,
+      preview_height = 0.55,
+      scroll_speed = 5,
+      height = 0.95,
+      width = 0.9,
     },
   }, opts)
 end
@@ -517,21 +536,17 @@ local telescope = require("telescope")
 local default_mode = "git"
 local mode = default_mode
 map({ "n", "i" }, "<C-g>", function()
+  -- toggle mode if c-g pressed in telescope
   if vim.bo.filetype == "TelescopePrompt" then
-    -- toggle mode
-    mode = mode == "git" and "files" or "git"
-    feedkeys("<C-c>", "n")
-  else
-    mode = default_mode
+    mode = (mode == "git" and "files") or "git"
   end
   if mode == "git" then
-    local has_git =
-      pcall(telescope_builtin.git_files, vim.tbl_extend("keep", find_files_opts, { show_untracked = true }))
-    if not has_git then
-      telescope_builtin.find_files(find_files_opts)
+    local git_files = pcall(telescope_builtin.git_files, with_find_files_opts({ show_untracked = true }))
+    if not git_files then
+      telescope_builtin.find_files(with_find_files_opts())
     end
   else
-    telescope_builtin.find_files(find_files_opts)
+    telescope_builtin.find_files(with_find_files_opts())
   end
 end, { noremap = true, silent = true, desc = "Find files" })
 local function get_visual_selection(escaped)
@@ -557,11 +572,10 @@ map("v", "<C-f>", function()
     initial_mode = "normal",
   }))
 end, { noremap = true, silent = true, desc = "Grep selected string" })
-map("n", "<C-f>", function()
+map("n", "<C-F>", function()
   telescope_builtin.live_grep(with_default_opts())
 end, { noremap = true, silent = true, desc = "Live grep" })
-map("n", "<C-S-x>", function()
-  -- aerial_config.setup("telescope")
+map("n", "<C-S-F>", function()
   telescope.extensions.aerial.aerial(with_default_opts({
     sorting_strategy = "descending",
     layout_config = {
@@ -687,11 +701,11 @@ map("n", "<F8>", function()
     dap.continue()
   end
 end, { noremap = true, silent = true })
-map("n", "<F32>", function()
+map("n", F_map("<F32>"), function()
   pcall(dapui.close)
   dap.run_last()
 end, { noremap = true, silent = true })
-map("n", "<F20>", function()
+map("n", F_map("<F20>"), function()
   dap.terminate()
   pcall(dapui.close)
 end, { noremap = true, silent = true })
@@ -841,30 +855,67 @@ map("n", "<leader>glf", function()
 end, { noremap = true, silent = true, desc = "Git log - current file" })
 -- diff
 map("n", "<leader>gdm", function()
-  cmd("tabnew")
+  cmd("DiffviewOpen")
   esc_tabclose_tabs[api.nvim_get_current_tabpage()] = true
-  cmd("b#")
-  cmd("Gvdiffsplit!")
 end, { noremap = true, silent = true, desc = "Git merge 3-way diff" })
 map("n", "<leader>gdf", function()
   cmd("DiffviewOpen HEAD -- %:p<CR>")
   esc_tabclose_tabs[api.nvim_get_current_tabpage()] = true
   cmd("wincmd l | wincmd l")
 end, { noremap = true, silent = true, desc = "Git diff file against index" })
-map(
-  "n",
-  "<leader>gda",
-  [[:DiffviewOpen HEAD]],
-  { noremap = true, silent = false, desc = "Git diff all against revision (prompts for revision)" }
-)
+map("n", "<leader>gda", function()
+  local rev = fn.input({ prompt = "Enter revision: ", default = O.git_rev })
+  if rev ~= nil and rev:len() > 0 then
+    cmd(("DiffviewOpen %s"):format(rev))
+    -- esc_tabclose_tabs[api.nvim_get_current_tabpage()] = true
+    cmd("wincmd j | wincmd l")
+  end
+end, { noremap = true, silent = false, desc = "Git diff all against revision (prompts for revision)" })
+-- git worktree
+map("n", "<leader>gwn", function()
+  -- require("telescope").extensions.git_worktree.create_git_worktree()
+  local branch = fn.input({ prompt = "Branch: ", default = "" })
+  if branch == nil or branch:len() == 0 then
+    return
+  end
+  local path = fn.input({
+    prompt = "Path to worktree: ",
+    default = ("./.git_worktrees/%s"):format(branch),
+    completion = "dir",
+  })
+  if path == nil or path:len() == 0 then
+    return
+  end
+  -- local cwd = fn.getcwd()
+  -- vim.cmd(("!mkdir -p %s/%s"):format(cwd, path))
+  vim.cmd.tabnew()
+  require("git-worktree").create_worktree(path, branch, "origin")
+end, { noremap = true, silent = false, desc = "Git worktree: new" })
+map("n", "<leader>gwo", function()
+  local items = vim.api.nvim_cmd(vim.api.nvim_parse_cmd("!git worktree list", {}), { output = true }) or ""
+  vim.ui.select({ unpack(items:split("\n"), 2) }, {
+    prompt = "Choose worktree",
+  }, function(pick)
+    if pick == nil or pick:len() == 0 then
+      return
+    end
+    vim.cmd.tabnew()
+    require("git-worktree").switch_worktree(pick:split(" ")[1])
+  end)
+  -- require("telescope").extensions.git_worktree.git_worktrees({ path_display = { "smart" } })
+end, { noremap = true, silent = false, desc = "Git worktree: switch" })
+
+map("n", "<leader>gwt", function()
+  require("telescope").extensions.git_worktree.git_worktrees({ path_display = { "smart" } })
+end, { noremap = true, silent = false, desc = "Git worktree: telescope" })
 -- git remote
 map("n", "<leader>grp", function()
-  term:open(nil, "float")
+  toggleterm(nil, "float")
   term:change_dir(fn.getcwd(-1, 0))
   term:send("git push", false)
 end, { noremap = true, silent = true, desc = "Git push" })
 map("n", "<leader>grl", function()
-  term:open(nil, "float")
+  toggleterm(nil, "float")
   term:change_dir(fn.getcwd(-1, 0))
   term:send("git pull", false)
 end, { noremap = true, silent = true, desc = "Git pull" })
@@ -872,36 +923,113 @@ end, { noremap = true, silent = true, desc = "Git pull" })
 map("n", "<leader>gtt", function()
   terms.lazygit:toggle()
 end, { noremap = true, silent = true, desc = "Lazygit" })
+-- gitlab
+local gitlab = require("gitlab")
+map("n", "<leader>ggrr", gitlab.review, { noremap = true, silent = true, desc = "gitlab: review" })
+map("n", "<leader>ggs", gitlab.summary, { noremap = true, silent = true, desc = "gitlab: summary" })
+map("n", "<leader>ggA", gitlab.approve, { noremap = true, silent = true, desc = "gitlab: approve" })
+map("n", "<leader>ggR", gitlab.revoke, { noremap = true, silent = true, desc = "gitlab: revoke" })
+map(
+  "n",
+  "<leader>ggc",
+  gitlab.create_comment,
+  { noremap = true, silent = true, desc = "gitlab: create_comment" }
+)
+map(
+  "v",
+  "<leader>ggc",
+  gitlab.create_multiline_comment,
+  { noremap = true, silent = true, desc = "gitlab: create_multiline_comment" }
+)
+map(
+  "v",
+  "<leader>ggC",
+  gitlab.create_comment_suggestion,
+  { noremap = true, silent = true, desc = "gitlab: create_comment_suggestion" }
+)
+map("n", "<leader>ggO", gitlab.create_mr, { noremap = true, silent = true, desc = "gitlab: create_mr" })
+map(
+  "n",
+  "<leader>ggm",
+  gitlab.move_to_discussion_tree_from_diagnostic,
+  { noremap = true, silent = true, desc = "gitlab: move_to_discussion_tree_from_diagnostic" }
+)
+map("n", "<leader>ggn", gitlab.create_note, { noremap = true, silent = true, desc = "gitlab: create_note" })
+map(
+  "n",
+  "<leader>ggd",
+  gitlab.toggle_discussions,
+  { noremap = true, silent = true, desc = "gitlab: toggle_discussions" }
+)
+map(
+  "n",
+  "<leader>ggaa",
+  gitlab.add_assignee,
+  { noremap = true, silent = true, desc = "gitlab: add_assignee" }
+)
+map(
+  "n",
+  "<leader>ggad",
+  gitlab.delete_assignee,
+  { noremap = true, silent = true, desc = "gitlab: delete_assignee" }
+)
+map("n", "<leader>ggla", gitlab.add_label, { noremap = true, silent = true, desc = "gitlab: add_label" })
+map(
+  "n",
+  "<leader>ggld",
+  gitlab.delete_label,
+  { noremap = true, silent = true, desc = "gitlab: delete_label" }
+)
+map(
+  "n",
+  "<leader>ggra",
+  gitlab.add_reviewer,
+  { noremap = true, silent = true, desc = "gitlab: add_reviewer" }
+)
+map(
+  "n",
+  "<leader>ggrd",
+  gitlab.delete_reviewer,
+  { noremap = true, silent = true, desc = "gitlab: delete_reviewer" }
+)
+map("n", "<leader>ggp", gitlab.pipeline, { noremap = true, silent = true, desc = "gitlab: pipeline" })
+map(
+  "n",
+  "<leader>ggo",
+  gitlab.open_in_browser,
+  { noremap = true, silent = true, desc = "gitlab: open_in_browser" }
+)
+map("n", "<leader>ggM", gitlab.merge, { noremap = true, silent = true, desc = "gitlab: merge" })
 -- harpoon
 local harpoon = require("harpoon")
 map("n", "<leader>aa", function()
-  harpoon:list():append()
+  harpoon:list():add()
 end)
 map("n", "<leader>av", function()
   harpoon.ui:toggle_quick_menu(harpoon:list())
 end)
-map("n", "å", function()
+map("n", "<M-a>", function()
   harpoon:list():select(1)
 end)
-map("n", "ß", function()
+map("n", "<M-s>", function()
   harpoon:list():select(2)
 end)
-map("n", "∂", function()
+map("n", "<M-d>", function()
   harpoon:list():select(3)
 end)
-map("n", "ƒ", function()
+map("n", "<M-f>", function()
   harpoon:list():select(4)
 end)
-map("n", "©", function()
+map("n", "<M-g>", function()
   harpoon:list():select(5)
 end)
-map("n", "˙", function()
+map("n", "<M-h>", function()
   harpoon:list():select(6)
 end)
-map("n", "∆", function()
+map("n", "<M-j>", function()
   harpoon:list():select(7)
 end)
-map("n", "˚", function()
+map("n", "<M-k>", function()
   harpoon:list():select(8)
 end)
 -- rest
@@ -939,6 +1067,54 @@ map("n", "<leader>ljsp", [[:%!jq<CR>]], { noremap = true, silent = true, desc = 
 map("v", "<leader>ljsp", [[:!jq<CR>]], { noremap = true, silent = true, desc = "Prettify json" })
 map("n", "<leader>ljsm", [[:%!jq -c<CR>]], { noremap = true, silent = true, desc = "Minify json" })
 map("v", "<leader>ljsm", [[:!jq -c<CR>]], { noremap = true, silent = true, desc = "Minify json" })
+map(
+  "n",
+  "<leader>lxp",
+  [[:%!xmllint --format -<CR>]],
+  { noremap = true, silent = true, desc = "Prettify xml" }
+)
+map(
+  "v",
+  "<leader>lxp",
+  [[:!xmllint --format -<CR>]],
+  { noremap = true, silent = true, desc = "Prettify xml" }
+)
+map(
+  "n",
+  "<leader>lxr",
+  [[:%!recode html..utf8<CR>]],
+  { noremap = true, silent = true, desc = "Recode html..utf" }
+)
+map(
+  "v",
+  "<leader>lxr",
+  [[:!recode html..utf8<CR>]],
+  { noremap = true, silent = true, desc = "Recode html..utf" }
+)
+map(
+  "n",
+  "<leader>lxj",
+  [[:%!yq -p=xml -o=json<CR>]],
+  { noremap = true, silent = true, desc = "Recode xml..json" }
+)
+map(
+  "v",
+  "<leader>lxj",
+  [[:!yq -p=xml -o=json<CR>]],
+  { noremap = true, silent = true, desc = "Recode xml..json" }
+)
+map(
+  "n",
+  "<leader>ljsx",
+  [[:%!yq -p=json -o=xml<CR>]],
+  { noremap = true, silent = true, desc = "Recode json..xml" }
+)
+map(
+  "v",
+  "<leader>ljsx",
+  [[:!yq -p=xml -o=json<CR>]],
+  { noremap = true, silent = true, desc = "Recode json..xml" }
+)
 -- map("c", "<C-t>", function()
 -- 	require("noice").redirect(fn.getcmdline())
 -- end, { desc = "Redirect Cmdline" })
@@ -1063,16 +1239,17 @@ map("n", "gO", function()
   cmd("startinsert")
 end, { noremap = true, silent = true, desc = "Add new line before current" })
 -- esc
-map("n", "<Esc>", function()
-  cmd.cclose()
+local function n_esc_map()
+  -- cmd.cclose()
   -- cmd([[Vista!]])
   cmd([[AerialClose]])
-  cmd([[NvimTreeClose]])
+  -- cmd([[NvimTreeClose]])
   cmd([[TroubleClose]])
   pcall(dapui.close)
-end, { noremap = true, silent = true })
+end
+map("n", "<Esc>", n_esc_map, { noremap = true, silent = true })
 -- filetype-specific shortcuts
-local esc_quit_fts = { "help", "NvimTree", "notify", "aerial", "vista_kind", "httpResult", "man", "Trouble" }
+local esc_quit_fts = { "aerial", "vista_kind", "httpResult", "Trouble" } -- "NvimTree", "help", "notify", "man"
 local esc_tabclose_fts = { "fugitive", "DiffviewFiles", "DiffviewFileHistory" }
 local q_quit_fts = { "help", "notify", "man", "ImportManager", "qf" }
 autocmd("BufWinEnter", {
@@ -1103,6 +1280,8 @@ autocmd("BufWinEnter", {
         if esc_tabclose_tabs[current_tab_handle] == nil then
           -- current tab is not the tab that was bound with current buffer
           -- -> we do not want to close this tab
+          -- trigger normal escape mapping
+          n_esc_map()
           return
         else
           esc_tabclose_tabs[current_tab_handle] = nil

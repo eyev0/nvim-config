@@ -1,4 +1,5 @@
 local M = {}
+local jumplist = require("rc.utils.jumplist")
 
 M.filter_telescope = {
   "Array",
@@ -15,13 +16,13 @@ M.filter_telescope = {
   "Interface",
   "Key",
   "Method",
-  -- "Module",
+  "Module",
   "Namespace",
   "Null",
   "Number",
   "Object",
-  -- "Operator",
-  -- "Package",
+  "Operator",
+  "Package",
   "Property",
   "String",
   "Struct",
@@ -40,12 +41,20 @@ M.filter_sideview = {
   "Struct",
 }
 
+local aerial = require("aerial")
 local map = vim.keymap.set
+
 local function set_aerial_buf_shortcuts(bufnr)
   local opts = { noremap = true, silent = true, buffer = bufnr }
   -- Jump forwards/backwards with '{' and '}'
-  map("n", "{", require("aerial").prev, opts)
-  map("n", "}", require("aerial").next, opts)
+  map("n", "{", function()
+    jumplist.mark()
+    aerial.prev()
+  end, opts)
+  map("n", "}", function()
+    jumplist.mark()
+    aerial.next()
+  end, opts)
 end
 
 local default_config = {
@@ -56,11 +65,15 @@ local default_config = {
   backends = {
     ["_"] = { "lsp", "treesitter", "markdown", "man" },
     lua = { "lsp", "treesitter" },
+    go = { "treesitter", "lsp" },
   },
   layout = {
     default_direction = "prefer_left",
     placement = "edge",
   },
+  disable_max_lines = 15000, -- default 10000
+  disable_max_size = 4000000, -- Default 2MB
+  autojump = true,
   -- filter_kind = M.filter_sideview,
 }
 

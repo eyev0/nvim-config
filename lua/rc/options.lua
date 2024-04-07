@@ -1,4 +1,4 @@
-vim.cmd("language en_US")
+vim.cmd("language messages en_US")
 
 -- neovim python api
 vim.g.python3_host_prog = "$HOME/.venvs/neovim/bin/python"
@@ -42,7 +42,6 @@ vim.o.scrolloff = O.scrolloff
 vim.o.sidescrolloff = O.sidescrolloff
 -- vim.wo.colorcolumn = "80"
 vim.o.showmode = false
--- vim.opt.signcolumn = "number"
 vim.opt.clipboard:prepend({ "unnamedplus" })
 vim.opt.shortmess:append("c")
 vim.opt.iskeyword:append("-")
@@ -64,7 +63,7 @@ vim.o.jumpoptions = "stack"
 -- vim.o.statuscolumn = "%s%=%{v:relnum?v:relnum:v:lnum} "
 vim.o.relativenumber = true
 vim.o.number = true
-vim.o.signcolumn = "yes:2"
+vim.o.signcolumn = O.signcolumn
 vim.o.fillchars = "eob: "
 
 -- langmap
@@ -91,7 +90,7 @@ autocmd("BufEnter", {
     if vim.tbl_contains(relnum_ignore_filetypes, vim.bo[opts.buf].filetype) then
       vim.wo.number = false
       vim.wo.relativenumber = false
-      vim.wo.signcolumn = "yes:1"
+      vim.wo.signcolumn = "auto:1"
     end
   end,
 })

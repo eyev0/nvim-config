@@ -1,0 +1,7 @@
+-- vim.lsp.start({
+--   name = "pls",
+--   cmd = { "pls" },
+--   init_options = {},
+--   filetypes = { "proto" },
+--   root_dir = vim.fn.getcwd(),
+-- })

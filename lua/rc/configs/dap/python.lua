@@ -47,7 +47,7 @@ table.insert(DEBUG_CONFIGS, {
       -- Options below are for debugpy, see https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings for supported options
       -- program = "${file}", -- This configuration will launch the current file if used.
       module = function()
-        return ENV.PYTHON_MODULE
+        return O.python_module
       end,
       cwd = function()
         return vim.fn.getcwd(-1, 0)
