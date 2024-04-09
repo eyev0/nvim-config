@@ -35,18 +35,20 @@ local Tabpage = {
     local win = api.nvim_tabpage_list_wins(self.tabpage)[1]
     local bufnr = api.nvim_win_get_buf(win)
     local filename = vim.api.nvim_buf_get_name(bufnr)
+    -- dirty hack - use filename coz filetype is not available at this point for some reason
     for _, v in ipairs(ignore_filename_update__name_patterns) do
       if filename:find(v) ~= nil then
         return
       end
     end
-    local cwd = fn.getcwd(-1, self.tabnr)
-    local _, end_ = filename:find(cwd .. "/", nil, true)
-    if end_ ~= nil then
-      end_ = end_ + 1
-    end
-    self.filename = filename:sub(end_ or 0)
+    -- local cwd = fn.getcwd(-1, self.tabnr)
+    -- local _, end_ = filename:find(cwd .. "/", nil, true)
+    -- if end_ ~= nil then
+    --   end_ = end_ + 1
+    -- end
+    -- self.filename = filename:sub(end_ or 0)
     -- self.filename = fn.fnamemodify(filename, ":.")
+    self.filename = fn.fnamemodify(filename, ":t")
   end,
   fallthrough = false,
   -- tabpage for terminal

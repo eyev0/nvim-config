@@ -18,9 +18,10 @@ vim.o.autowrite = true
 vim.o.writebackup = false
 vim.o.undofile = true
 vim.opt.undodir = vim.fn.expand("$HOME/.vim/undodir")
-vim.o.sessionoptions = "buffers,curdir,folds,help,tabpages,winsize,winpos,localoptions"
+vim.o.sessionoptions = "buffers,curdir,help,tabpages,winsize,winpos,localoptions"
 vim.o.updatetime = 100
-vim.o.timeoutlen = 300
+vim.o.timeout = true
+vim.o.timeoutlen = 600
 vim.o.ttimeout = false
 vim.o.shiftround = true
 vim.o.mouse = "a"
@@ -130,10 +131,6 @@ autocmd("TextYankPost", {
     vim.highlight.on_yank({ higroup = "CurSearch", timeout = 200 })
   end,
 })
-
--- tmux italics
-vim.cmd([[let &t_ZH="\e[3m"]])
-vim.cmd([[let &t_ZR="\e[23m"]])
 
 -- gui stuff
 vim.cmd([[au UIEnter * let g:has_gui=1]])

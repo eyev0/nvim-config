@@ -171,7 +171,9 @@ map(
   { silent = false, desc = "Search and replace selection" }
 )
 -- Maximizer
-map("n", "<C-w>m", [[:MaximizerToggle!<CR>]], { noremap = true, silent = true })
+map("n", "<C-w>m", function()
+  require("maximizer").toggle()
+end, { noremap = true, silent = true, desc = "Maximizer: toggle" })
 -- undo streak breakers
 map("i", ",", [[,<C-g>u]], { noremap = true, silent = true })
 map("i", ".", [[.<C-g>u]], { noremap = true, silent = true })
@@ -822,7 +824,7 @@ map("n", "<leader>gst", function()
   if not ok then
     return
   end
-  cmd("resize -7")
+  cmd("resize -10")
   local current_tab = api.nvim_get_current_tabpage()
   esc_tabclose_tabs[current_tab] = true
   prev_active_tabs[current_tab] = prevtabhandle
@@ -886,9 +888,7 @@ map("n", "<leader>gwn", function()
   if path == nil or path:len() == 0 then
     return
   end
-  -- local cwd = fn.getcwd()
-  -- vim.cmd(("!mkdir -p %s/%s"):format(cwd, path))
-  vim.cmd.tabnew()
+  O.git_worktree_pre_create_hook()
   require("git-worktree").create_worktree(path, branch, "origin")
 end, { noremap = true, silent = false, desc = "Git worktree: new" })
 map("n", "<leader>gwo", function()
@@ -899,12 +899,11 @@ map("n", "<leader>gwo", function()
     if pick == nil or pick:len() == 0 then
       return
     end
-    vim.cmd.tabnew()
+    O.git_worktree_pre_switch_hook()
     require("git-worktree").switch_worktree(pick:split(" ")[1])
   end)
   -- require("telescope").extensions.git_worktree.git_worktrees({ path_display = { "smart" } })
 end, { noremap = true, silent = false, desc = "Git worktree: switch" })
-
 map("n", "<leader>gwt", function()
   require("telescope").extensions.git_worktree.git_worktrees({ path_display = { "smart" } })
 end, { noremap = true, silent = false, desc = "Git worktree: telescope" })
@@ -1251,7 +1250,7 @@ map("n", "<Esc>", n_esc_map, { noremap = true, silent = true })
 -- filetype-specific shortcuts
 local esc_quit_fts = { "aerial", "vista_kind", "httpResult", "Trouble" } -- "NvimTree", "help", "notify", "man"
 local esc_tabclose_fts = { "fugitive", "DiffviewFiles", "DiffviewFileHistory" }
-local q_quit_fts = { "help", "notify", "man", "ImportManager", "qf" }
+local q_quit_fts = { "help", "notify", "man", "ImportManager", "qf", "TelescopePrompt" }
 autocmd("BufWinEnter", {
   group = augroup("CustomFiletypeSettings", {}),
   callback = function(opts)
@@ -1268,7 +1267,20 @@ autocmd("BufWinEnter", {
       else
         map("n", "<Esc>", ":quit<CR>", { noremap = true, silent = true, nowait = true, buffer = opts.buf })
       end
-    elseif vim.tbl_contains(esc_tabclose_fts, ft) or esc_tabclose_tabs[tab_to_close] ~= nil then
+    end
+
+    if vim.tbl_contains(q_quit_fts, ft) then
+      if ft == "qf" then
+        map("n", "q", function()
+          cmd.wincmd("p")
+          cmd.cclose()
+        end, { noremap = true, silent = true, nowait = true, buffer = opts.buf })
+      else
+        map("n", "q", ":quit<CR>", { noremap = true, silent = true, nowait = true, buffer = opts.buf })
+      end
+    end
+
+    if vim.tbl_contains(esc_tabclose_fts, ft) or esc_tabclose_tabs[tab_to_close] ~= nil then
       -- close current tab and focus previously active tab
       map("n", "<Esc>", function()
         -- pprint(esc_tabclose_tabs)
@@ -1300,17 +1312,6 @@ autocmd("BufWinEnter", {
           vim.notify(("Can not close this tab page: %s"):format(res), vim.log.levels.WARN)
         end
       end, { noremap = true, silent = true, buffer = opts.buf })
-    end
-    -- other shortcuts
-    if vim.tbl_contains(q_quit_fts, ft) then
-      if ft == "qf" then
-        map("n", "q", function()
-          cmd.wincmd("p")
-          cmd.cclose()
-        end, { noremap = true, silent = true, nowait = true, buffer = opts.buf })
-      else
-        map("n", "q", ":quit<CR>", { noremap = true, silent = true, nowait = true, buffer = opts.buf })
-      end
     end
   end,
 })

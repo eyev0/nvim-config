@@ -11,12 +11,6 @@ return {
   { "folke/neodev.nvim" },
   { "folke/neoconf.nvim" },
   { "jbyuki/one-small-step-for-vimkind" },
-  -- {
-  --   "miversen33/import.nvim",
-  --   config = function()
-  --     require("import")
-  --   end,
-  -- },
   {
     "rafcamlet/nvim-luapad",
     config = function()
@@ -40,12 +34,6 @@ return {
     end,
     event = "VeryLazy",
   },
-  -- {
-  --   "gbprod/yanky.nvim",
-  --   config = function()
-  --     require("rc.configs.yanky")
-  --   end,
-  -- },
   {
     "gbprod/substitute.nvim",
     config = function()
@@ -66,29 +54,6 @@ return {
   "lambdalisue/suda.vim",
   -- filetype-specific
   { "gpanders/editorconfig.nvim" },
-  -- {
-  --   "epwalsh/obsidian.nvim",
-  --   dependencies = { "nvim-lua/plenary.nvim" },
-  --   opts = {
-  --     workspaces = {
-  --       {
-  --         name = "personal",
-  --         path = "~/dev/self/obsidian/personal",
-  --       },
-  --       {
-  --         name = "work",
-  --         path = "~/dev/self/obsidian/work",
-  --       },
-  --     },
-  --     daily_notes = {
-  --       folder = "notes/dailies",
-  --     },
-  --     -- disable_frontmatter = true,
-  --     note_frontmatter_func = function(note)
-  --       return { id = note.id, aliases = note.aliases, tags = note.tags }
-  --     end,
-  --   },
-  -- },
   { "chrisbra/csv.vim", ft = "csv" },
   {
     "toppair/peek.nvim", -- markdown preview
@@ -124,7 +89,10 @@ return {
     cond = not IS_FIRENVIM,
     event = "ColorScheme",
   },
-  "szw/vim-maximizer",
+  {
+    "0x00-ketsu/maximizer.nvim",
+    config = true,
+  },
   {
     "lukas-reineke/indent-blankline.nvim",
     main = "ibl",
@@ -353,6 +321,7 @@ return {
       "stevearc/dressing.nvim", -- Recommended but not required. Better UI for pickers.
       "nvim-tree/nvim-web-devicons", -- Recommended but not required. Icons in discussion tree.
     },
+    event = "VeryLazy",
     build = function()
       require("gitlab.server").build(true)
     end, -- Builds the Go binary
@@ -475,8 +444,8 @@ return {
   {
     "leoluz/nvim-dap-go",
     config = true,
-    dev = true,
-    dir = O.devpath .. "/nvim-dap-go",
+    -- dev = true,
+    -- dir = O.devpath .. "/nvim-dap-go",
   },
   -- tests
   {
@@ -556,6 +525,7 @@ return {
         vim.g.gruvbox_material_current_word = "grey background"
 
         vim.cmd("autocmd ColorScheme * highlight! link WinBar Normal")
+        vim.cmd("autocmd ColorScheme * highlight! link TabLineFill Normal")
         vim.cmd("colorscheme gruvbox-material")
       end
     end,

@@ -627,8 +627,9 @@ M.DAPMessages = {
     return " " .. require("dap").status() .. " "
   end,
   hl = "Debug",
+  --               
   {
-    provider = "",
+    provider = "",
     on_click = {
       callback = function()
         require("dap").step_into()
@@ -638,17 +639,7 @@ M.DAPMessages = {
   },
   { provider = " " },
   {
-    provider = "",
-    on_click = {
-      callback = function()
-        require("dap").step_out()
-      end,
-      name = "heirline_dap_step_out",
-    },
-  },
-  { provider = " " },
-  {
-    provider = " ",
+    provider = "",
     on_click = {
       callback = function()
         require("dap").step_over()
@@ -658,7 +649,17 @@ M.DAPMessages = {
   },
   { provider = " " },
   {
-    provider = "ﰇ",
+    provider = "",
+    on_click = {
+      callback = function()
+        require("dap").step_out()
+      end,
+      name = "heirline_dap_step_out",
+    },
+  },
+  { provider = " " },
+  {
+    provider = "",
     on_click = {
       callback = function()
         require("dap").run_last()
@@ -668,7 +669,7 @@ M.DAPMessages = {
   },
   { provider = " " },
   {
-    provider = "",
+    provider = "",
     on_click = {
       callback = function()
         require("dap").terminate()
@@ -678,7 +679,6 @@ M.DAPMessages = {
     },
   },
   { provider = " " },
-  -- icons:       ﰇ  
 }
 
 M.TerminalName = {
