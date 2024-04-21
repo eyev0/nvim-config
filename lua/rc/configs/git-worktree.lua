@@ -28,3 +28,22 @@ Worktree.on_tree_change(function(op, metadata)
     end
   end
 end)
+
+local M = {}
+
+function M.create_worktree(path, branch, remote)
+    if O.git_worktree_pre_create_hook ~= nil then
+      O.git_worktree_pre_create_hook(path, branch, remote)
+    end
+  require("git-worktree").create_worktree(path, branch, remote)
+end
+
+
+function M.switch_worktree(path)
+    if O.git_worktree_pre_switch_hook ~= nil then
+      O.git_worktree_pre_switch_hook(path)
+    end
+  require("git-worktree").switch_worktree(path)
+end
+
+return M

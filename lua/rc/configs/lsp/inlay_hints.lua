@@ -4,7 +4,7 @@ local inlay_hints_au = nil
 local fts = {
   lua = true,
   rust = true,
-  go = true,
+  go = false,
   java = true,
   javascript = false,
   typescript = true,
@@ -29,12 +29,14 @@ Lsp.inlay_hints_update_autocmd = function()
   inlay_hints_au = autocmd({ "BufEnter" }, {
     group = inlay_hints_aug,
     callback = function(opts)
-      local client_attached = vim.tbl_count(
-        vim.lsp.get_clients({ bufnr = opts.buf, name = client_names[vim.bo.filetype] })
-      ) > 0
-      if vim.tbl_contains(vim.tbl_keys(fts), vim.bo.filetype) and client_attached then
-        -- print(vim.api.nvim_buf_get_name(opts.buf), opts.buf, vim.bo.buftype)
-        vim.lsp.inlay_hint.enable(opts.buf, fts[vim.bo.filetype])
+      if vim.tbl_contains(vim.tbl_keys(fts), vim.bo.filetype) then
+        local client_attached = vim.tbl_count(
+          vim.lsp.get_clients({ bufnr = opts.buf, name = client_names[vim.bo.filetype] })
+        ) > 0
+        if client_attached then
+          -- print(vim.api.nvim_buf_get_name(opts.buf), opts.buf, vim.bo.buftype)
+          vim.lsp.inlay_hint.enable(opts.buf, fts[vim.bo.filetype])
+        end
       end
     end,
   })

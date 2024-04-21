@@ -13,6 +13,14 @@ local function set_lsp_buf_shortcuts(_, bufnr)
       end,
     })
   end, { noremap = true, silent = true, desc = "Goto Definition" })
+  buf_map("n", "gD", function()
+    vim.lsp.buf.declaration({
+      reuse_win = true,
+      on_list = function(options)
+        Lsp.on_list(options, options.items and #options.items > 1, true)
+      end,
+    })
+  end, { noremap = true, silent = true, desc = "Goto Definition" })
   buf_map("n", "gr", function()
     vim.lsp.buf.references({ includeDeclaration = false }, { on_list = Lsp.on_list })
   end, { noremap = true, silent = true, desc = "List References" })
@@ -50,6 +58,8 @@ end
 Lsp.on_attach = function(client, bufnr)
   vim.api.nvim_set_option_value("omnifunc", "v:lua.vim.lsp.omnifunc", { buf = bufnr })
   set_lsp_buf_shortcuts(client, bufnr)
-  Lsp.inlay_hints_update_autocmd()
-end
 
+  if O.inlay_hints then
+    Lsp.inlay_hints_update_autocmd()
+  end
+end

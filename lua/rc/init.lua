@@ -16,7 +16,7 @@ O = {
   lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim",
   pluginspath = vim.fn.stdpath("data") .. "/lazy",
   devpath = vim.env.HOME .. "/dev/personal/neovim-plugins",
-  inlay_hints = false,
+  inlay_hints = true,
   git_rev = "master",
   git_worktree_pre_create_hook = function(_)
     vim.cmd.tabnew()
@@ -24,11 +24,7 @@ O = {
   git_worktree_pre_switch_hook = function(_)
     vim.cmd.tabnew()
   end,
-  git_worktree_post_create_hook = function(metadata)
-    -- vim.cmd("vsplit +enew")
-    -- vim.cmd("NvimTreeClose")
-    require("git-worktree").switch_worktree(metadata.path)
-  end,
+  git_worktree_post_create_hook = nil,
   git_worktree_post_switch_hook = function(_)
     vim.cmd("vsplit +enew")
     vim.cmd("NvimTreeClose")
@@ -43,6 +39,8 @@ O = {
     },
   },
   python_module = "app",
+  vis_modes = { "v", "V", "vs", "Vs", "CTRL-V", "CTRL-Vs" },
+  ins_modes = { "i", "ic", "ix" },
 }
 
 IS_FIRENVIM = vim.g.started_by_firenvim ~= nil or vim.env.NVIM_FIRENVIM == 1

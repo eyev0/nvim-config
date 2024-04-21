@@ -2,7 +2,6 @@ local api = vim.api
 local cmd = vim.cmd
 local fn = vim.fn
 local qf = require("rc.utils.qf")
-local jumplist = require("rc.utils.jumplist")
 
 -- LSP Snippet Support
 local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -49,7 +48,7 @@ function Lsp.on_list(options, open, jump)
   local entry = options.items[1]
   open = vim.F.if_nil(open, true) and n_items > 1
   jump = vim.F.if_nil(jump, true)
-  jumplist.mark()
+  vim.cmd("normal! m`")
   fn.setqflist({}, " ", options)
   -- print(vim.inspect(options))
   if jump then
@@ -93,7 +92,7 @@ function Lsp.on_list(options, open, jump)
         cmd("edit " .. entry.filename)
       end
       api.nvim_win_set_cursor(win, { entry.lnum, entry.col - 1 })
-      jumplist.mark()
+      vim.cmd("normal! m`")
     end
     -- qf.set_jumplist(entry.bufnr, entry.lnum, entry.col - 1)
     -- jumplist.mark()
