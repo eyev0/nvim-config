@@ -62,7 +62,7 @@ autocmd("BufWinEnter", {
       -- vim.bo.errorformat = [[%f\|%l\ col\ %c\|%m]]
       -- TODO: scanf docs
       --
-      -- vim.bo.errorformat = [[%f\ *\|\ *%l\:%c\ *\|\ %m]]
+      -- vim.bo.errorformat = [[%f\ \|\ %l:%c\ \|\ %m]]
       -- setlocal errorformat=%f\|%l\ col\ %c\|%m
       api.nvim_win_set_height(0, get_qf_height(#vim.fn.getqflist()))
       vim.cmd("wincmd J")

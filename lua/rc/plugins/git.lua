@@ -18,19 +18,9 @@ return {
     config = function()
       require("rc.configs.git-worktree")
     end,
-    -- dev = true,
-    -- dir = O.devpath .. "/git-worktree.nvim",
-    -- branch = "local",
   },
   {
     "harrisoncramer/gitlab.nvim",
-    dependencies = {
-      "MunifTanjim/nui.nvim",
-      "nvim-lua/plenary.nvim",
-      "sindrets/diffview.nvim",
-      "stevearc/dressing.nvim", -- Recommended but not required. Better UI for pickers.
-      "nvim-tree/nvim-web-devicons", -- Recommended but not required. Icons in discussion tree.
-    },
     event = "VeryLazy",
     build = function()
       require("gitlab.server").build(true)

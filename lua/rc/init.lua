@@ -18,7 +18,7 @@ O = {
   devpath = vim.env.HOME .. "/dev/personal/neovim-plugins",
   inlay_hints = true,
   git_rev = "master",
-  git_worktree_pre_create_hook = function(_)
+  git_worktree_pre_create_hook = function(_, _, _)
     vim.cmd.tabnew()
   end,
   git_worktree_pre_switch_hook = function(_)
